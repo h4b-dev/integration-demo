@@ -1,6 +1,5 @@
 import { getValidToken } from './paymentAuth';
-
-const BASE_URL = import.meta.env.VITE_PAYMENT_BASE_URL as string;
+import { getPaymentApiBaseUrl } from './config';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -57,7 +56,7 @@ export async function processCharge(payload: ChargePayload): Promise<ChargeRespo
 
   console.log('[Charges] Sending charge:', JSON.stringify(payload, null, 2));
 
-  const response = await fetch(`${BASE_URL}/api/v2/Charges`, {
+  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v2/Charges`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

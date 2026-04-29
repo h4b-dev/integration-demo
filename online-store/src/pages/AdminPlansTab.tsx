@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useDevPanel } from '../context/DevPanelContext';
 import { usePlans } from '../context/PlansContext';
+import { useCredentials } from '../context/CredentialsContext';
+import { ENVIRONMENTS } from '../config/environments';
 import { createPlan } from '../services/plans';
 import type { PlanPayload } from '../services/plans';
 import './AdminPlansTab.css';
 
-const BASE_URL = import.meta.env.VITE_PAYMENT_BASE_URL || 'https://api-sandbox.n1co.shop';
 const CYCLE_TYPES = ['DAY', 'WEEK', 'MONTH', 'YEAR'];
 
 const DEFAULT_FORM = {
@@ -51,6 +52,8 @@ function toPayload(form: typeof DEFAULT_FORM): PlanPayload {
 export default function AdminPlansTab() {
   const { setRequest } = useDevPanel();
   const { plans, addPlan, removePlan } = usePlans();
+  const { credentials } = useCredentials();
+  const BASE_URL = ENVIRONMENTS[credentials.environment].paymentApi;
   const [form, setForm] = useState(DEFAULT_FORM);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +72,7 @@ export default function AdminPlansTab() {
       },
       body: toPayload(form),
     });
-  }, [form, setRequest]);
+  }, [form, setRequest, BASE_URL]);
 
   // Clear DevPanel on unmount
   useEffect(() => {

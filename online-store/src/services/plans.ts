@@ -1,6 +1,5 @@
 import { getValidToken } from './paymentAuth';
-
-const BASE_URL = import.meta.env.VITE_PAYMENT_BASE_URL as string;
+import { getPaymentApiBaseUrl } from './config';
 
 export interface PlanPayload {
   name: string;
@@ -25,7 +24,7 @@ export async function createPlan(payload: PlanPayload): Promise<number> {
 
   console.log('[Plans] Creating plan:', JSON.stringify(payload, null, 2));
 
-  const response = await fetch(`${BASE_URL}/api/v2/Plans`, {
+  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v2/Plans`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

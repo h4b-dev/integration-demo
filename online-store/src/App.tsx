@@ -3,6 +3,7 @@ import { CartProvider } from './context/CartContext';
 import { PaymentProvider } from './context/PaymentContext';
 import { DevPanelProvider, useDevPanel } from './context/DevPanelContext';
 import { PlansProvider } from './context/PlansContext';
+import { CredentialsProvider, useCredentials } from './context/CredentialsContext';
 import { useCart } from './context/CartContext';
 import CheckoutModal from './components/CheckoutModal';
 import Header from './components/Header';
@@ -15,7 +16,7 @@ import ProductsTab from './pages/ProductsTab';
 import SubscriptionsTab from './pages/SubscriptionsTab';
 import CheckoutTab from './pages/CheckoutTab';
 import ThankYouPage from './pages/ThankYouPage';
-import { authenticate } from './services/paymentAuth';
+import { authenticate, clearToken } from './services/paymentAuth';
 import './App.css';
 
 function AppContent() {
@@ -24,6 +25,7 @@ function AppContent() {
   const [paymentUrl, setPaymentUrl]     = useState<string | null>(null);
   const { request, setRequest } = useDevPanel();
   const { clearCart } = useCart();
+  const { credentials, isConfigured } = useCredentials();
 
   useEffect(() => {
     // Fallback: detect success from URL params (e.g. top-level redirect from payment page)
@@ -35,11 +37,19 @@ function AppContent() {
     }
   }, []);
 
+  // Re-authenticate when credentials or environment change. Cached tokens are
+  // tied to a {environment + clientId} fingerprint, so changing either one
+  // invalidates the previous token automatically.
   useEffect(() => {
+    if (!isConfigured) {
+      clearToken();
+      console.warn('[App] API credentials not set — open Settings to configure.');
+      return;
+    }
     authenticate()
       .then(() => console.log('[App] Payment API ready.'))
       .catch((err) => console.error('[App] Payment API auth error:', err));
-  }, []);
+  }, [credentials.environment, credentials.clientId, credentials.clientSecret, isConfigured]);
 
   useEffect(() => {
     if (activeTab !== 'checkout' && activeTab !== 'subscriptions') setRequest(null);
@@ -95,14 +105,16 @@ function AppContent() {
 
 export default function App() {
   return (
-    <CartProvider>
-      <PaymentProvider>
-        <PlansProvider>
-          <DevPanelProvider>
-            <AppContent />
-          </DevPanelProvider>
-        </PlansProvider>
-      </PaymentProvider>
-    </CartProvider>
+    <CredentialsProvider>
+      <CartProvider>
+        <PaymentProvider>
+          <PlansProvider>
+            <DevPanelProvider>
+              <AppContent />
+            </DevPanelProvider>
+          </PlansProvider>
+        </PaymentProvider>
+      </CartProvider>
+    </CredentialsProvider>
   );
 }

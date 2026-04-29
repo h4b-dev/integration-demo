@@ -1,6 +1,4 @@
-const BASE_URL = import.meta.env.VITE_PAYMENT_BASE_URL as string;
-const CLIENT_ID = import.meta.env.VITE_PAYMENT_CLIENT_ID as string;
-const CLIENT_SECRET = import.meta.env.VITE_PAYMENT_CLIENT_SECRET as string;
+import { getConfig, getPaymentApiBaseUrl, isConfigured, subscribe } from './config';
 
 interface TokenResponse {
   tokenType: string;
@@ -11,17 +9,38 @@ interface TokenResponse {
 // Module-level singleton — token persists for the lifetime of the app session
 let storedToken: string | null = null;
 let tokenExpiresAt: number | null = null;
+let tokenIssuedFor: string | null = null; // environment + clientId fingerprint
+
+// Whenever credentials/environment change, the cached token is no longer valid.
+subscribe((cfg) => {
+  const fingerprint = `${cfg.environment}::${cfg.clientId}`;
+  if (fingerprint !== tokenIssuedFor) {
+    storedToken = null;
+    tokenExpiresAt = null;
+    tokenIssuedFor = null;
+  }
+});
+
+export function clearToken(): void {
+  storedToken = null;
+  tokenExpiresAt = null;
+  tokenIssuedFor = null;
+}
 
 export async function authenticate(): Promise<string> {
-  const response = await fetch(`${BASE_URL}/api/v3/Token`, {
+  if (!isConfigured()) {
+    throw new Error('API credentials not configured. Open Settings to add a clientId and clientSecret.');
+  }
+
+  const { clientId, clientSecret, environment } = getConfig();
+  const baseUrl = getPaymentApiBaseUrl();
+
+  const response = await fetch(`${baseUrl}/api/v3/Token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      clientId: CLIENT_ID,
-      clientSecret: CLIENT_SECRET,
-    }),
+    body: JSON.stringify({ clientId, clientSecret }),
   });
 
   if (!response.ok) {
@@ -38,6 +57,7 @@ export async function authenticate(): Promise<string> {
 
   storedToken = data.accessToken;
   tokenExpiresAt = Date.now() + data.expiresIn * 1000;
+  tokenIssuedFor = `${environment}::${clientId}`;
 
   console.log('[PaymentAuth] Token expires at:', new Date(tokenExpiresAt).toISOString());
 

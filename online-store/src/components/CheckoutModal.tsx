@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { usePayment } from '../context/PaymentContext';
 import { useCart } from '../context/CartContext';
 import { useDevPanel } from '../context/DevPanelContext';
+import { useCredentials } from '../context/CredentialsContext';
+import { ENVIRONMENTS } from '../config/environments';
 import { tokenizeCard } from '../services/paymentMethods';
 import type { CardInput, SavedCard } from '../services/paymentMethods';
 import { processCharge, generateOrderId } from '../services/charges';
@@ -27,8 +29,6 @@ const SUBSCRIPTION_CUSTOMER = {
 
 const BILLING_INFO = { CountryCode: 'US', StateCode: 'CA', ZipCode: '10002' };
 
-const BASE_URL = import.meta.env.VITE_PAYMENT_BASE_URL || 'https://api-sandbox.n1co.shop';
-
 // ── Helpers ────────────────────────────────────────────────────────────────
 function formatCardNumber(raw: string): string {
   return raw.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
@@ -46,6 +46,8 @@ export default function CheckoutModal() {
   const { state, addCard, removeCard, selectCard, closeCheckout } = usePayment();
   const { totalPrice, state: cartState, clearCart } = useCart();
   const { setRequest } = useDevPanel();
+  const { credentials } = useCredentials();
+  const BASE_URL = ENVIRONMENTS[credentials.environment].paymentApi;
 
   const [step, setStep]                   = useState<Step>('card-select');
   const [showAddCard, setShowAddCard]     = useState(state.savedCards.length === 0);
@@ -98,7 +100,7 @@ export default function CheckoutModal() {
         singleUse: form.singleUse,
       },
     });
-  }, [form, showAddCard, state.isCheckoutOpen, setRequest]);
+  }, [form, showAddCard, state.isCheckoutOpen, setRequest, BASE_URL]);
 
   // ── Dev panel: charge request (Products tab, card select view) ───────────
   useEffect(() => {
@@ -199,6 +201,7 @@ export default function CheckoutModal() {
         },
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, storedAuthId, state.savedCards, state.selectedCardId, state.selectedPlanId, totalPrice, cartState.items.length, setRequest]);
 
 

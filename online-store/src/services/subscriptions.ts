@@ -1,6 +1,5 @@
 import { getValidToken } from './paymentAuth';
-
-const BASE_URL = import.meta.env.VITE_PAYMENT_BASE_URL as string;
+import { getPaymentApiBaseUrl } from './config';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -44,7 +43,7 @@ export async function processSubscription(payload: SubscriptionPayload): Promise
 
   console.log('[Subscriptions] Sending subscription:', JSON.stringify(payload, null, 2));
 
-  const response = await fetch(`${BASE_URL}/api/v2/Subscriptions`, {
+  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v2/Subscriptions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
