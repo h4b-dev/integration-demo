@@ -1,6 +1,5 @@
 import { getValidToken } from './paymentAuth';
-
-const BASE_URL = import.meta.env.VITE_PAYMENT_BASE_URL as string;
+import { getPaymentApiBaseUrl } from './config';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -63,7 +62,7 @@ export async function tokenizeCard(
 
   console.log('[PaymentMethods] Tokenizing card for customer:', customer.id);
 
-  const response = await fetch(`${BASE_URL}/api/v2/PaymentMethods`, {
+  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v2/PaymentMethods`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -89,7 +88,7 @@ export async function deletePaymentMethod(cardId: string): Promise<void> {
 
   console.log('[PaymentMethods] Deleting card:', cardId);
 
-  const response = await fetch(`${BASE_URL}/api/v2/PaymentMethods/${cardId}`, {
+  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v2/PaymentMethods/${cardId}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,

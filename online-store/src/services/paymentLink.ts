@@ -1,9 +1,5 @@
 import type { CartItem } from '../types';
-
-const ENDPOINT = '/api/paymentlink/checkout';
-const TOKEN =
-  import.meta.env.VITE_PAYMENT_LINK_TOKEN ||
-  'sk_5b62f376887a64dfecd8fcd642f067bf5a305595402a39d5d9946170311c8fd5';
+import { getConfig, getPaymentLinkProxyPath } from './config';
 
 export interface PaymentLinkResponse {
   orderCode: string;
@@ -16,6 +12,11 @@ export async function createPaymentLink(
   orderName = 'NexShop Order',
   orderDescription = 'Online store purchase'
 ): Promise<PaymentLinkResponse> {
+  const { paymentLinkToken } = getConfig();
+  if (!paymentLinkToken.trim()) {
+    throw new Error('Payment Link API token not configured. Open Settings to add one.');
+  }
+
   const successUrl = `${window.location.origin}${window.location.pathname}?checkout=success`;
   const cancelUrl = `${window.location.origin}${window.location.pathname}?checkout=cancelled`;
 
@@ -40,10 +41,10 @@ export async function createPaymentLink(
     ],
   };
 
-  const response = await fetch(ENDPOINT, {
+  const response = await fetch(`${getPaymentLinkProxyPath()}/checkout`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${TOKEN}`,
+      Authorization: `Bearer ${paymentLinkToken}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },

@@ -36,6 +36,76 @@
   letter-spacing: -0.5px;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.env-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: filter 0.15s, transform 0.15s;
+}
+
+.env-badge:hover {
+  filter: brightness(0.97);
+  transform: translateY(-1px);
+}
+
+.env-badge--sandbox {
+  background: #fffbeb;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+.env-badge--live {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+
+.env-badge--warn {
+  background: #fef2f2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+
+.env-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.85;
+}
+
+.settings-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  color: #4b5563;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.settings-button:hover {
+  background: #eef2ff;
+  color: #4338ca;
+}
+
 .cart-button {
   position: relative;
   display: flex;
