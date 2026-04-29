@@ -1,0 +1,124 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'online-store/**'
+      - '.github/workflows/deploy.yml'
+  pull_request:
+    paths:
+      - 'online-store/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    name: Lint and Type Check
+    defaults:
+      run:
+        working-directory: online-store
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: online-store/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npx tsc -b
+
+  deploy:
+    needs: quality
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    name: Deploy to Production
+    permissions:
+      contents: read
+      deployments: write
+    defaults:
+      run:
+        working-directory: online-store
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: online-store/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: online-store
+
+  preview:
+    needs: quality
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    name: Upload Preview Version
+    permissions:
+      contents: read
+      pull-requests: write
+      deployments: write
+    defaults:
+      run:
+        working-directory: online-store
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: online-store/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload preview version to Cloudflare
+        id: preview
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: online-store
+          command: versions upload --message "PR #${{ github.event.pull_request.number }} (${{ github.event.pull_request.head.sha }})"
+
+      - name: Comment preview URL on PR
+        if: steps.preview.outputs.deployment-url != ''
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: cloudflare-preview
+          message: |
+            ### Cloudflare Workers Preview
+
+            - **Preview URL:** ${{ steps.preview.outputs.deployment-url }}
+            - **Commit:** `${{ github.event.pull_request.head.sha }}`
+
+            This preview was uploaded as a non-production version. Production traffic is unaffected.
