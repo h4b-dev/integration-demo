@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useCart } from '../context/CartContext';
-import { usePayment } from '../context/PaymentContext';
-import { useDevPanel } from '../context/DevPanelContext';
+import { useCart } from '../context/useCart';
+import { usePayment } from '../context/usePayment';
+import { useDevPanel } from '../context/useDevPanel';
 import { createPaymentLink } from '../services/paymentLink';
 import type { TabId } from './Tabs';
 import './Cart.css';

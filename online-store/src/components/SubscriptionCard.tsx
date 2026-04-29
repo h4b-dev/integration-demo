@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Subscription } from '../types';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../context/useCart';
 import './SubscriptionCard.css';
 
 interface SubscriptionCardProps {

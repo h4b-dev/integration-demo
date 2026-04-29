@@ -1,11 +1,7 @@
-import { createContext, useContext, useReducer } from 'react';
+import { useReducer } from 'react';
 import type { ReactNode } from 'react';
 import type { CartItem } from '../types';
-
-interface CartState {
-  items: CartItem[];
-  isOpen: boolean;
-}
+import { CartContext, type CartState } from './useCart';
 
 type CartAction =
   | { type: 'ADD_ITEM'; payload: CartItem }
@@ -57,20 +53,6 @@ function cartReducer(state: CartState, action: CartAction): CartState {
   }
 }
 
-interface CartContextValue {
-  state: CartState;
-  addItem: (item: CartItem) => void;
-  removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
-  clearCart: () => void;
-  toggleCart: () => void;
-  closeCart: () => void;
-  totalItems: number;
-  totalPrice: number;
-}
-
-const CartContext = createContext<CartContextValue | null>(null);
-
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
@@ -95,10 +77,4 @@ export function CartProvider({ children }: { children: ReactNode }) {
       {children}
     </CartContext.Provider>
   );
-}
-
-export function useCart() {
-  const ctx = useContext(CartContext);
-  if (!ctx) throw new Error('useCart must be used within CartProvider');
-  return ctx;
 }

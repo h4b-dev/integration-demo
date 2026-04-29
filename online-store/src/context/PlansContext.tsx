@@ -1,24 +1,5 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
-
-export interface CreatedPlan {
-  id: number;
-  name: string;
-  description: string;
-  amount: number;
-  billingCycleType: string;
-  billingCyclesNumber: number;
-  trialCycleType: string;
-  trialCyclesNumber: number;
-  locationId: number;
-}
-
-interface PlansContextType {
-  plans: CreatedPlan[];
-  addPlan: (plan: CreatedPlan) => void;
-  removePlan: (id: number) => void;
-}
-
-const PlansContext = createContext<PlansContextType | null>(null);
+import { useState, type ReactNode } from 'react';
+import { PlansContext, type CreatedPlan } from './usePlans';
 
 export function PlansProvider({ children }: { children: ReactNode }) {
   const [plans, setPlans] = useState<CreatedPlan[]>([]);
@@ -29,10 +10,4 @@ export function PlansProvider({ children }: { children: ReactNode }) {
       {children}
     </PlansContext.Provider>
   );
-}
-
-export function usePlans() {
-  const ctx = useContext(PlansContext);
-  if (!ctx) throw new Error('usePlans must be used within PlansProvider');
-  return ctx;
 }

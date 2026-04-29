@@ -1,16 +1,9 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { Environment } from '../config/environments';
 import { setConfig } from '../services/config';
+import { CredentialsContext, type Credentials } from './useCredentials';
 
 const STORAGE_KEY = 'nexshop_api_credentials';
-
-export interface Credentials {
-  environment: Environment;
-  clientId: string;
-  clientSecret: string;
-  paymentLinkToken: string;
-}
 
 const DEFAULT_CREDS: Credentials = {
   environment: 'sandbox',
@@ -34,14 +27,6 @@ function load(): Credentials {
     return DEFAULT_CREDS;
   }
 }
-
-interface CredentialsContextValue {
-  credentials: Credentials;
-  isConfigured: boolean;
-  updateCredentials: (next: Partial<Credentials>) => void;
-}
-
-const CredentialsContext = createContext<CredentialsContextValue | null>(null);
 
 export function CredentialsProvider({ children }: { children: ReactNode }) {
   const [credentials, setCredentials] = useState<Credentials>(load);
@@ -68,10 +53,4 @@ export function CredentialsProvider({ children }: { children: ReactNode }) {
       {children}
     </CredentialsContext.Provider>
   );
-}
-
-export function useCredentials() {
-  const ctx = useContext(CredentialsContext);
-  if (!ctx) throw new Error('useCredentials must be used within CredentialsProvider');
-  return ctx;
 }

@@ -1,5 +1,5 @@
-import { usePlans } from '../context/PlansContext';
-import { usePayment } from '../context/PaymentContext';
+import { usePlans } from '../context/usePlans';
+import { usePayment } from '../context/usePayment';
 import './ClientPlansTab.css';
 
 const CYCLE_LABEL: Record<string, string> = {

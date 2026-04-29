@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useCredentials } from '../context/CredentialsContext';
+import { useCredentials } from '../context/useCredentials';
 import { ENVIRONMENTS, ENVIRONMENT_LABELS } from '../config/environments';
 import type { Environment } from '../config/environments';
 import './SettingsModal.css';

@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { usePayment } from '../context/PaymentContext';
-import { useCart } from '../context/CartContext';
-import { useDevPanel } from '../context/DevPanelContext';
-import { useCredentials } from '../context/CredentialsContext';
+import { usePayment } from '../context/usePayment';
+import { useCart } from '../context/useCart';
+import { useDevPanel } from '../context/useDevPanel';
+import { useCredentials } from '../context/useCredentials';
 import { ENVIRONMENTS } from '../config/environments';
 import { tokenizeCard } from '../services/paymentMethods';
 import type { CardInput, SavedCard } from '../services/paymentMethods';

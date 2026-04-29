@@ -1,17 +1,10 @@
-import { createContext, useContext, useReducer, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { SavedCard } from '../services/paymentMethods';
 import type { TabId } from '../components/Tabs';
+import { PaymentContext, type PaymentState } from './usePayment';
 
 const STORAGE_KEY = 'nexshop_saved_cards';
-
-interface PaymentState {
-  savedCards: SavedCard[];
-  selectedCardId: string | null;
-  selectedPlanId: number | null;
-  isCheckoutOpen: boolean;
-  sourceTab: TabId | null; // which tab opened checkout
-}
 
 type PaymentAction =
   | { type: 'ADD_CARD'; payload: SavedCard }
@@ -59,19 +52,6 @@ function paymentReducer(state: PaymentState, action: PaymentAction): PaymentStat
   }
 }
 
-interface PaymentContextValue {
-  state: PaymentState;
-  addCard: (card: SavedCard) => void;
-  removeCard: (id: string) => void;
-  selectCard: (id: string | null) => void;
-  selectPlan: (id: number | null) => void;
-  openCheckout: (tab: TabId) => void;
-  closeCheckout: () => void;
-  selectedCard: SavedCard | null;
-}
-
-const PaymentContext = createContext<PaymentContextValue | null>(null);
-
 export function PaymentProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(paymentReducer, {
     savedCards: loadSavedCards(),
@@ -106,10 +86,4 @@ export function PaymentProvider({ children }: { children: ReactNode }) {
       {children}
     </PaymentContext.Provider>
   );
-}
-
-export function usePayment() {
-  const ctx = useContext(PaymentContext);
-  if (!ctx) throw new Error('usePayment must be used within PaymentProvider');
-  return ctx;
 }

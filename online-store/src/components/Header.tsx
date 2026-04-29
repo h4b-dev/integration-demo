@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useCart } from '../context/CartContext';
-import { useCredentials } from '../context/CredentialsContext';
+import { useCart } from '../context/useCart';
+import { useCredentials } from '../context/useCredentials';
 import { ENVIRONMENT_LABELS } from '../config/environments';
 import SettingsModal from './SettingsModal';
 import './Header.css';

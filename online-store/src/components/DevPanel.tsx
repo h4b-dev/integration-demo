@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { ApiRequest } from '../context/DevPanelContext';
+import type { ApiRequest } from '../context/useDevPanel';
 import './DevPanel.css';
 
 // ── JSON syntax highlighter ─────────────────────────────────────────────────
@@ -10,7 +10,7 @@ function highlight(value: unknown): string {
     .replace(/>/g, '&gt;');
 
   return json.replace(
-    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
     (match) => {
       let cls = 'json-num';
       if (/^"/.test(match)) {

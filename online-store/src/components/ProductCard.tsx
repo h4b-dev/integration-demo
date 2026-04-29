@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Product } from '../types';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../context/useCart';
 import './ProductCard.css';
 
 interface ProductCardProps {

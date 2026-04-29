@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useDevPanel } from '../context/DevPanelContext';
-import { usePlans } from '../context/PlansContext';
-import { useCredentials } from '../context/CredentialsContext';
+import { useDevPanel } from '../context/useDevPanel';
+import { usePlans } from '../context/usePlans';
+import { useCredentials } from '../context/useCredentials';
 import { ENVIRONMENTS } from '../config/environments';
 import { createPlan } from '../services/plans';
 import type { PlanPayload } from '../services/plans';

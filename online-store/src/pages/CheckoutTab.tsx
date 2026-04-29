@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { checkoutProducts } from '../data/products';
 import ProductCard from '../components/ProductCard';
-import { useCart } from '../context/CartContext';
-import { useDevPanel } from '../context/DevPanelContext';
+import { useCart } from '../context/useCart';
+import { useDevPanel } from '../context/useDevPanel';
 import './TabPage.css';
 
 const categories = ['All', ...Array.from(new Set(checkoutProducts.map((p) => p.category)))];
