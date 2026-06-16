@@ -322,7 +322,7 @@ Descripción de los campos:
 
 **Endpoint:**
 ```
-POST https://api-sandbox.n1co.shop/api/v2/Charges
+POST https://api-sandbox.n1co.shop/api/v3/Charges
 ```
 
 **Headers:**
@@ -494,7 +494,7 @@ Tienda                          N1CO Pay API                    Banco del client
   │── POST /api/v3/PaymentMethods ───>│                                │
   │<── id: "pm_abc123" ───────────────│                                │
   │                                   │                                │
-  │── POST /api/v2/Charges ──────────>│                                │
+  │── POST /api/v3/Charges ──────────>│                                │
   │   (authenticationId: null)        │                                │
   │                                   │                                │
   │         ┌─────────────────────────┤                                │
@@ -508,7 +508,7 @@ Tienda                          N1CO Pay API                    Banco del client
   │── Muestra iframe del banco ───────────────────────────────────────>│
   │<── Cliente completa verificación ─────────────────────────────────│
   │                                   │                                │
-  │── POST /api/v2/Charges ──────────>│                                │
+  │── POST /api/v3/Charges ──────────>│                                │
   │   (authenticationId: "auth_3ds_…")│                                │
   │<── status: "SUCCESS" ─────────────│                                │
 ```
@@ -900,7 +900,7 @@ Admin                      N1CO Pay API                      Cliente
 | `POST` | `https://api-sandbox.n1co.shop/api/v3/Token` | Obtener token de acceso (Payment API) |
 | `POST` | `https://api-sandbox.n1co.shop/api/v3/PaymentMethods` | Tokenizar una tarjeta |
 | `DELETE` | `https://api-sandbox.n1co.shop/api/v3/PaymentMethods/{id}` | Eliminar un token de tarjeta guardado |
-| `POST` | `https://api-sandbox.n1co.shop/api/v2/Charges` | Realizar un cobro |
+| `POST` | `https://api-sandbox.n1co.shop/api/v3/Charges` | Realizar un cobro |
 | `POST` | `https://api-sandbox.n1co.shop/api/v3/Plans` | Crear un plan de suscripción |
 | `POST` | `https://api-sandbox.n1co.shop/api/v3/Subscriptions` | Crear una suscripción |
 | `POST` | `https://api-pay-sandbox.n1co.shop/api/paymentlink/checkout` | Crear un link de pago |
