@@ -110,7 +110,7 @@ export default function CheckoutModal() {
       label: 'Process Charge',
       method: 'POST',
       baseUrl: BASE_URL,
-      endpoint: '/api/v2/Charges',
+      endpoint: '/api/v3/Charges',
       headers: {
         'Authorization': 'Bearer <access_token>',
         'Content-Type': 'application/json',
@@ -182,7 +182,7 @@ export default function CheckoutModal() {
         label: 'Process Charge (3DS Auth)',
         method: 'POST',
         baseUrl: BASE_URL,
-        endpoint: '/api/v2/Charges',
+        endpoint: '/api/v3/Charges',
         headers: {
           'Authorization': 'Bearer <access_token>',
           'Content-Type': 'application/json',
