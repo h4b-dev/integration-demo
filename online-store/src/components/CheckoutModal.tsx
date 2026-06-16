@@ -83,7 +83,7 @@ export default function CheckoutModal() {
       label: 'Tokenize Card',
       method: 'POST',
       baseUrl: BASE_URL,
-      endpoint: '/api/v2/PaymentMethods',
+      endpoint: '/api/v3/PaymentMethods',
       headers: {
         'Authorization': 'Bearer <access_token>',
         'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ export default function CheckoutModal() {
       label: 'Create Subscription',
       method: 'POST',
       baseUrl: BASE_URL,
-      endpoint: '/api/v2/Subscriptions',
+      endpoint: '/api/v3/Subscriptions',
       headers: {
         'Authorization': 'Bearer <access_token>',
         'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ export default function CheckoutModal() {
         label: 'Create Subscription (3DS Auth)',
         method: 'POST',
         baseUrl: BASE_URL,
-        endpoint: '/api/v2/Subscriptions',
+        endpoint: '/api/v3/Subscriptions',
         headers: {
           'Authorization': 'Bearer <access_token>',
           'Content-Type': 'application/json',

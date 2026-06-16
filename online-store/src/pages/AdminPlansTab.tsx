@@ -65,7 +65,7 @@ export default function AdminPlansTab() {
       label: 'Create Plan',
       method: 'POST',
       baseUrl: BASE_URL,
-      endpoint: '/api/v2/Plans',
+      endpoint: '/api/v3/Plans',
       headers: {
         'Authorization': 'Bearer <access_token>',
         'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export default function AdminPlansTab() {
         label: 'Create Plan',
         method: 'POST',
         baseUrl: BASE_URL,
-        endpoint: '/api/v2/Plans',
+        endpoint: '/api/v3/Plans',
         headers: {
           'Authorization': 'Bearer <access_token>',
           'Content-Type': 'application/json',

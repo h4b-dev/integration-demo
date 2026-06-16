@@ -252,7 +252,7 @@ Content-Type: application/json
 
 **Endpoint:**
 ```
-POST https://api-sandbox.n1co.shop/api/v2/PaymentMethods
+POST https://api-sandbox.n1co.shop/api/v3/PaymentMethods
 ```
 
 **Headers:**
@@ -491,7 +491,7 @@ Tienda                          N1CO Pay API                    Banco del client
   │── POST /api/v3/Token ────────────>│                                │
   │<── accessToken ───────────────────│                                │
   │                                   │                                │
-  │── POST /api/v2/PaymentMethods ───>│                                │
+  │── POST /api/v3/PaymentMethods ───>│                                │
   │<── id: "pm_abc123" ───────────────│                                │
   │                                   │                                │
   │── POST /api/v2/Charges ──────────>│                                │
@@ -696,9 +696,9 @@ La pestaña **Subscriptions** está dividida en dos vistas:
 El proceso de suscripción tiene dos pasos previos (crear plan desde Admin) y luego el flujo del cliente:
 
 ```
-[1] Admin crea el plan   →  POST /api/v2/Plans  →  obtiene el plan ID
-[2] Cliente tokeniza     →  POST /api/v2/PaymentMethods  →  obtiene token de tarjeta
-[3] Cliente se suscribe  →  POST /api/v2/Subscriptions   →  con o sin 3DS
+[1] Admin crea el plan   →  POST /api/v3/Plans  →  obtiene el plan ID
+[2] Cliente tokeniza     →  POST /api/v3/PaymentMethods  →  obtiene token de tarjeta
+[3] Cliente se suscribe  →  POST /api/v3/Subscriptions   →  con o sin 3DS
 ```
 
 ---
@@ -707,7 +707,7 @@ El proceso de suscripción tiene dos pasos previos (crear plan desde Admin) y lu
 
 **Endpoint:**
 ```
-POST https://api-sandbox.n1co.shop/api/v2/Plans
+POST https://api-sandbox.n1co.shop/api/v3/Plans
 ```
 
 **Headers:**
@@ -750,7 +750,7 @@ Los valores posibles de `billingCycleType` y `trialCycleType` son: `DAY`, `WEEK`
 
 ### Paso 2 (Cliente) — Tokenizar la tarjeta
 
-Idéntico al **Paso 2 del Flujo A**. El cliente ingresa su tarjeta, se llama a `POST /api/v2/PaymentMethods` y se obtiene el `id` del método de pago tokenizado.
+Idéntico al **Paso 2 del Flujo A**. El cliente ingresa su tarjeta, se llama a `POST /api/v3/PaymentMethods` y se obtiene el `id` del método de pago tokenizado.
 
 ---
 
@@ -758,7 +758,7 @@ Idéntico al **Paso 2 del Flujo A**. El cliente ingresa su tarjeta, se llama a `
 
 **Endpoint:**
 ```
-POST https://api-sandbox.n1co.shop/api/v2/Subscriptions
+POST https://api-sandbox.n1co.shop/api/v3/Subscriptions
 ```
 
 **Headers:**
@@ -869,13 +869,13 @@ Si `error` no es `null`, la suscripción fue rechazada. El campo `error.message`
 ```
 Admin                      N1CO Pay API                      Cliente
   │                              │                               │
-  │── POST /api/v2/Plans ───────>│                               │
+  │── POST /api/v3/Plans ───────>│                               │
   │<── planId: 48 ───────────────│                               │
   │                              │                               │
-  │                              │<── POST /api/v2/PaymentMethods│
+  │                              │<── POST /api/v3/PaymentMethods│
   │                              │── id: "pm_abc123" ───────────>│
   │                              │                               │
-  │                              │<── POST /api/v2/Subscriptions─│
+  │                              │<── POST /api/v3/Subscriptions─│
   │                              │    (authenticationId: null)   │
   │                              │                               │
   │                    ┌─────────┤                               │
@@ -886,7 +886,7 @@ Admin                      N1CO Pay API                      Cliente
   │                    └── SÍ ───┤                               │
   │                              │── authentication.url ────────>│
   │                              │<── Cliente completa 3DS ──────│
-  │                              │<── POST /api/v2/Subscriptions─│
+  │                              │<── POST /api/v3/Subscriptions─│
   │                              │    (authenticationId: "…")    │
   │                              │── subscription created ──────>│
 ```
@@ -898,9 +898,9 @@ Admin                      N1CO Pay API                      Cliente
 | Método | URL | ¿Para qué? |
 |---|---|---|
 | `POST` | `https://api-sandbox.n1co.shop/api/v3/Token` | Obtener token de acceso (Payment API) |
-| `POST` | `https://api-sandbox.n1co.shop/api/v2/PaymentMethods` | Tokenizar una tarjeta |
-| `DELETE` | `https://api-sandbox.n1co.shop/api/v2/PaymentMethods/{id}` | Eliminar un token de tarjeta guardado |
+| `POST` | `https://api-sandbox.n1co.shop/api/v3/PaymentMethods` | Tokenizar una tarjeta |
+| `DELETE` | `https://api-sandbox.n1co.shop/api/v3/PaymentMethods/{id}` | Eliminar un token de tarjeta guardado |
 | `POST` | `https://api-sandbox.n1co.shop/api/v2/Charges` | Realizar un cobro |
-| `POST` | `https://api-sandbox.n1co.shop/api/v2/Plans` | Crear un plan de suscripción |
-| `POST` | `https://api-sandbox.n1co.shop/api/v2/Subscriptions` | Crear una suscripción |
+| `POST` | `https://api-sandbox.n1co.shop/api/v3/Plans` | Crear un plan de suscripción |
+| `POST` | `https://api-sandbox.n1co.shop/api/v3/Subscriptions` | Crear una suscripción |
 | `POST` | `https://api-pay-sandbox.n1co.shop/api/paymentlink/checkout` | Crear un link de pago |

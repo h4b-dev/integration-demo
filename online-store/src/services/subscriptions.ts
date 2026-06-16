@@ -43,7 +43,7 @@ export async function processSubscription(payload: SubscriptionPayload): Promise
 
   console.log('[Subscriptions] Sending subscription:', JSON.stringify(payload, null, 2));
 
-  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v2/Subscriptions`, {
+  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v3/Subscriptions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

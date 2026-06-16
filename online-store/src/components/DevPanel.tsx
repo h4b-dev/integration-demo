@@ -97,7 +97,7 @@ function IdleScreen() {
         </div>
         <div className="dp-api-item">
           <span className="dp-api-badge post">POST</span>
-          <span>/api/v2/PaymentMethods</span>
+          <span>/api/v3/PaymentMethods</span>
         </div>
         <div className="dp-api-item">
           <span className="dp-api-badge post">POST</span>
