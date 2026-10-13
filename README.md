@@ -742,7 +742,7 @@ Authorization: Bearer <accessToken>
 48
 ```
 
-Guarda ese número — es el `subscriptionLinkId` que el cliente usará al suscribirse.
+Guarda ese número — es el `planId` que el cliente usará al suscribirse.
 
 Los valores posibles de `billingCycleType` y `trialCycleType` son: `DAY`, `WEEK`, `MONTH`, `YEAR`.
 
@@ -770,16 +770,16 @@ Authorization: Bearer <accessToken>
 **Body (primer intento):**
 ```json
 {
-  "subscriptionLinkId": 48,
+  "planId": 48,
   "customer": {
-    "name": "Rollffin",
-    "email": "rolfin.guiroa@n1co.com",
-    "phoneNumber": "+50778787"
+    "id": "coreAutomatess",
+    "name": "coreAutomatess",
+    "email": "coreAutomatess@n1co.com",
+    "phoneNumber": "+50310000019"
   },
   "paymentMethod": {
     "id": "pm_abc123xyz789"
-  },
-  "locationCode": "QA"
+  }
 }
 ```
 
@@ -787,12 +787,13 @@ Descripción de los campos:
 
 | Campo | Descripción |
 |---|---|
-| `subscriptionLinkId` | ID del plan obtenido en el Paso 1 |
+| `planId` | ID del plan obtenido en el Paso 1 |
+| `customer.id` | ID del cliente — **debe ser el mismo `customer` con el que se tokenizó la tarjeta en el Paso 2**; si no coincide, la API responde `500` |
 | `customer.name` | Nombre del suscriptor |
 | `customer.email` | Correo del suscriptor |
 | `customer.phoneNumber` | Teléfono del suscriptor |
 | `paymentMethod.id` | Token de tarjeta obtenido en el Paso 2 |
-| `locationCode` | Código de ubicación del comercio (ej. `"QA"` en sandbox) |
+| `locationCode` | *(Opcional)* Código de una sucursal del comercio (ver `GET /api/v3/Locations`). Si se omite se usa la sucursal por defecto; un código inexistente devuelve `400 Invalid location code` |
 
 ---
 
@@ -832,10 +833,9 @@ El flujo es idéntico al **Paso 4 del Flujo A**: se muestra la URL en un iframe,
 
 ```json
 {
-  "subscriptionLinkId": 48,
+  "planId": 48,
   "customer": { ... },
   "paymentMethod": { "id": "pm_abc123xyz789" },
-  "locationCode": "QA",
   "authenticationId": "bbae3dc9-0293-4789-8bec-ff373b9df534"
 }
 ```

@@ -4,16 +4,17 @@ import { getPaymentApiBaseUrl } from './config';
 // ── Types ──────────────────────────────────────────────────────────────────
 
 export interface SubscriptionCustomer {
+  id: string;           // must match the customer the card was tokenized under
   name: string;
   email: string;
   phoneNumber: string;
 }
 
 export interface SubscriptionPayload {
-  subscriptionLinkId: number;
+  planId: number;
   customer: SubscriptionCustomer;
   paymentMethod: { id: string };
-  locationCode: string;
+  locationCode?: string; // omit to use the merchant's default location
   authenticationId?: string | null;
 }
 
