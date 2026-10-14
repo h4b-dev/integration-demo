@@ -21,12 +21,12 @@ jobs:
       run:
         working-directory: online-store
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
           cache-dependency-path: online-store/package-lock.json
 
@@ -51,12 +51,12 @@ jobs:
       run:
         working-directory: online-store
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
           cache-dependency-path: online-store/package-lock.json
 
@@ -67,7 +67,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to Cloudflare Workers
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -76,7 +76,8 @@ jobs:
 
   preview:
     needs: quality
-    if: github.event_name == 'pull_request'
+    # Dependabot-triggered runs don't receive repository secrets, so the upload can't authenticate.
+    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     name: Upload Preview Version
     permissions:
@@ -87,12 +88,12 @@ jobs:
       run:
         working-directory: online-store
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
           cache-dependency-path: online-store/package-lock.json
 
@@ -104,7 +105,7 @@ jobs:
 
       - name: Upload preview version to Cloudflare
         id: preview
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -114,7 +115,7 @@ jobs:
 
       - name: Comment preview URL on PR
         if: steps.preview.outputs.deployment-url != ''
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: cloudflare-preview
           message: |
