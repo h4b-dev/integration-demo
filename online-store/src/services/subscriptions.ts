@@ -4,16 +4,17 @@ import { getPaymentApiBaseUrl } from './config';
 // ── Types ──────────────────────────────────────────────────────────────────
 
 export interface SubscriptionCustomer {
+  id: string;           // must match the customer the card was tokenized under
   name: string;
   email: string;
   phoneNumber: string;
 }
 
 export interface SubscriptionPayload {
-  subscriptionLinkId: number;
+  planId: number;
   customer: SubscriptionCustomer;
   paymentMethod: { id: string };
-  locationCode: string;
+  locationCode?: string; // omit to use the merchant's default location
   authenticationId?: string | null;
 }
 
@@ -43,7 +44,7 @@ export async function processSubscription(payload: SubscriptionPayload): Promise
 
   console.log('[Subscriptions] Sending subscription:', JSON.stringify(payload, null, 2));
 
-  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v2/Subscriptions`, {
+  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v3/Subscriptions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

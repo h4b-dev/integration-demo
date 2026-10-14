@@ -56,7 +56,7 @@ export async function processCharge(payload: ChargePayload): Promise<ChargeRespo
 
   console.log('[Charges] Sending charge:', JSON.stringify(payload, null, 2));
 
-  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v2/Charges`, {
+  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v3/Charges`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

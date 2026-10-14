@@ -12,19 +12,14 @@ import { processSubscription } from '../services/subscriptions';
 import type { SubscriptionResponse } from '../services/subscriptions';
 import './CheckoutModal.css';
 
-// ── Sandbox customer (Payment API) ─────────────────────────────────────────
+// ── Sandbox customer (Payment + Subscription API) ──────────────────────────
+// Cards are tokenized under this customer, so charges and subscriptions must
+// reference the same one — a different customer makes /Subscriptions return 500.
 const SANDBOX_CUSTOMER = {
   id: 'coreAutomatess',
   email: 'coreAutomatess@n1co.com',
   name: 'coreAutomatess',
   phoneNumber: '+50310000019',
-};
-
-// ── Subscription customer (Subscription API) ───────────────────────────────
-const SUBSCRIPTION_CUSTOMER = {
-  name: 'Rollffin',
-  email: 'rolfin.guiroa@n1co.com',
-  phoneNumber: '+50778787',
 };
 
 const BILLING_INFO = { CountryCode: 'US', StateCode: 'CA', ZipCode: '10002' };
@@ -83,7 +78,7 @@ export default function CheckoutModal() {
       label: 'Tokenize Card',
       method: 'POST',
       baseUrl: BASE_URL,
-      endpoint: '/api/v2/PaymentMethods',
+      endpoint: '/api/v3/PaymentMethods',
       headers: {
         'Authorization': 'Bearer <access_token>',
         'Content-Type': 'application/json',
@@ -110,7 +105,7 @@ export default function CheckoutModal() {
       label: 'Process Charge',
       method: 'POST',
       baseUrl: BASE_URL,
-      endpoint: '/api/v2/Charges',
+      endpoint: '/api/v3/Charges',
       headers: {
         'Authorization': 'Bearer <access_token>',
         'Content-Type': 'application/json',
@@ -139,16 +134,15 @@ export default function CheckoutModal() {
       label: 'Create Subscription',
       method: 'POST',
       baseUrl: BASE_URL,
-      endpoint: '/api/v2/Subscriptions',
+      endpoint: '/api/v3/Subscriptions',
       headers: {
         'Authorization': 'Bearer <access_token>',
         'Content-Type': 'application/json',
       },
       body: {
-        subscriptionLinkId: state.selectedPlanId ?? '<select a plan>',
-        customer: SUBSCRIPTION_CUSTOMER,
+        planId: state.selectedPlanId ?? '<select a plan>',
+        customer: SANDBOX_CUSTOMER,
         paymentMethod: { id: selectedCard ? `tok_••••${selectedCard.last4}` : '<select a card>' },
-        locationCode: 'QA',
       },
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -164,16 +158,15 @@ export default function CheckoutModal() {
         label: 'Create Subscription (3DS Auth)',
         method: 'POST',
         baseUrl: BASE_URL,
-        endpoint: '/api/v2/Subscriptions',
+        endpoint: '/api/v3/Subscriptions',
         headers: {
           'Authorization': 'Bearer <access_token>',
           'Content-Type': 'application/json',
         },
         body: {
-          subscriptionLinkId: state.selectedPlanId ?? '<plan id>',
-          customer: SUBSCRIPTION_CUSTOMER,
+          planId: state.selectedPlanId ?? '<plan id>',
+          customer: SANDBOX_CUSTOMER,
           paymentMethod: { id: selectedCard ? `tok_••••${selectedCard.last4}` : '<card>' },
-          locationCode: 'QA',
           authenticationId: storedAuthId,
         },
       });
@@ -182,7 +175,7 @@ export default function CheckoutModal() {
         label: 'Process Charge (3DS Auth)',
         method: 'POST',
         baseUrl: BASE_URL,
-        endpoint: '/api/v2/Charges',
+        endpoint: '/api/v3/Charges',
         headers: {
           'Authorization': 'Bearer <access_token>',
           'Content-Type': 'application/json',
@@ -406,10 +399,9 @@ export default function CheckoutModal() {
     setError(null);
 
     const payload = {
-      subscriptionLinkId: planId,
-      customer: SUBSCRIPTION_CUSTOMER,
+      planId,
+      customer: SANDBOX_CUSTOMER,
       paymentMethod: { id: cardId },
-      locationCode: 'QA',
       ...(authenticationId ? { authenticationId } : {}),
     };
 

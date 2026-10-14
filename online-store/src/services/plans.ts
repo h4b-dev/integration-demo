@@ -24,7 +24,7 @@ export async function createPlan(payload: PlanPayload): Promise<number> {
 
   console.log('[Plans] Creating plan:', JSON.stringify(payload, null, 2));
 
-  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v2/Plans`, {
+  const response = await fetch(`${getPaymentApiBaseUrl()}/api/v3/Plans`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -33,14 +33,15 @@ export async function createPlan(payload: PlanPayload): Promise<number> {
     body: JSON.stringify(payload),
   });
 
-  const body = await response.text();
+  const body = await response.json();
+  console.log("body", body)
 
   if (!response.ok) {
-    console.error('[Plans] HTTP error:', response.status, body);
-    throw new Error(`Plan creation failed [${response.status}]: ${body}`);
+    console.error('[Plans] HTTP error:', response.status, response.text);
+    throw new Error(`Plan creation failed [${response.status}]: ${response.text}`);
   }
 
-  const planId = parseInt(body, 10);
+  const planId = parseInt(body.planId, 10);
   console.log('[Plans] Created plan ID:', planId);
   return planId;
 }
